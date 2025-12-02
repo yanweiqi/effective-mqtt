@@ -84,15 +84,6 @@ const Login = () => {
           </div>
         )}
 
-        {/* 其它登录方式 */}
-        <div className="other-login">
-          <span className="other-label">其它登录方式</span>
-          <div className="icon-group">
-            <button className="icon-button wechat" onClick={() => setMode('wechat')}>微信</button>
-            <button className="icon-button sms" onClick={() => setMode('sms')}>短信</button>
-          </div>
-        </div>
-
         {mode === 'sms' && (
           <div className="sms-box">
             <div className="sms-row">
@@ -133,6 +124,15 @@ const Login = () => {
             </div>
           </div>
         )}
+
+        {/* 其它登录方式统一放底部 */}
+        <div className="other-login">
+          <span className="other-label">其它登录方式</span>
+          <div className="icon-group">
+            <button className="icon-button wechat" onClick={() => setMode('wechat')}>微信</button>
+            <button className="icon-button sms" onClick={() => setMode('sms')}>短信</button>
+          </div>
+        </div>
 
         {user && (
           <div className="user-info">
