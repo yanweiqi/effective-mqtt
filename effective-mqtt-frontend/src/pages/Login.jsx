@@ -94,7 +94,7 @@ const Login = () => {
                   sendCode(sms.phone.trim());
                   setCooldown(60);
                 } catch (e) { setError(e.message); }
-              }}>{cooldown > 0 ? `重发(${cooldown}s)` : '发送验证码'}</button>
+              }}>{cooldown > 0 ? `重发(${cooldown}s)` : '发验证码'}</button>
             </div>
             <div className="sms-row">
               <input placeholder="验证码" value={sms.code} onChange={(e) => setSms({ ...sms, code: e.target.value })} />
@@ -129,6 +129,7 @@ const Login = () => {
         <div className="other-login">
           <span className="other-label">其它登录方式</span>
           <div className="icon-group">
+            <button className="icon-button" onClick={() => setMode('account')}>账号</button>
             <button className="icon-button wechat" onClick={() => setMode('wechat')}>微信</button>
             <button className="icon-button sms" onClick={() => setMode('sms')}>短信</button>
           </div>
