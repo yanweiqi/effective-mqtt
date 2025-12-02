@@ -1,0 +1,10 @@
+.app-management { padding: 16px; }
+.form-section { margin-bottom: 16px; }
+.form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+input, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+button { padding: 8px 12px; }
+.error { color: #b00020; margin-top: 8px; }
+.result-section { border: 1px solid #eee; padding: 12px; border-radius: 6px; margin-bottom: 16px; }
+.kv { display: flex; gap: 8px; margin: 4px 0; }
+.apps-table { width: 100%; border-collapse: collapse; }
+.apps-table th, .apps-table td { border: 1px solid #eee; padding: 6px; }
