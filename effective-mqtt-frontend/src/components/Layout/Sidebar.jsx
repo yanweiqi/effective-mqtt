@@ -9,6 +9,7 @@ const Sidebar = () => {
     { id: 'dashboard', label: '仪表板', icon: '📊' },
     { id: 'connections', label: '连接管理', icon: '🔌' },
     { id: 'topics', label: '主题管理', icon: '📝' },
+    { id: 'apps', label: '应用管理', icon: '🗂️' },
     { id: 'messages', label: '消息监控', icon: '💬' },
     { id: 'clients', label: '客户端管理', icon: '👥' },
     { id: 'statistics', label: '统计分析', icon: '📈' },
@@ -26,11 +27,9 @@ const Sidebar = () => {
           >
             <span className="menu-icon">{item.icon}</span>
             <span className="menu-label">
-              {item.id === 'topics' ? (
-                <Link to="/topics">主题管理</Link>
-              ) : (
-                item.label
-              )}
+              {item.id === 'topics' && <Link to="/topics">主题管理</Link>}
+              {item.id === 'apps' && <Link to="/apps">应用管理</Link>}
+              {item.id !== 'topics' && item.id !== 'apps' && item.label}
             </span>
           </div>
         ))}
