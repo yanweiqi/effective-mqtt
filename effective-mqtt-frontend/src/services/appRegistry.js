@@ -22,7 +22,7 @@ function genKey(len = 24) {
   return out;
 }
 
-export function submitApplication({ name, code, description }) {
+export function submitApplication({ name, code, description, link }) {
   if (!name || !code) {
     throw new Error('应用名称和应用 code 不能为空');
   }
@@ -32,7 +32,7 @@ export function submitApplication({ name, code, description }) {
   }
   const ak = genKey(20);
   const sk = genKey(32);
-  const app = { id: Date.now(), name, code, description, ak, sk, createdAt: new Date().toISOString() };
+  const app = { id: Date.now(), name, code, description, link: link || '', ak, sk, createdAt: new Date().toISOString() };
   apps.push(app);
   saveApps(apps);
   return app;
