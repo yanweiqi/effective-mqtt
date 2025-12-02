@@ -1,0 +1,26 @@
+/* Simple centered login card with spacing */
+.login-page { min-height: 60vh; display: grid; place-items: center; padding: 24px; }
+.login-card { width: 360px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.login-card h1 { font-size: 22px; margin: 0 0 4px; }
+.login-card h2 { font-size: 18px; margin: 8px 0 0; }
+.tabs { display: flex; gap: 8px; width: 100%; }
+.tab { flex: 1; padding: 8px; border: 1px solid #e5e7eb; background: #f8fafc; border-radius: 6px; cursor: pointer; }
+.tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.wechat-box { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; }
+.qr { width: 180px; height: 180px; border-radius: 6px; border: 1px solid #e5e7eb; }
+.status { font-size: 14px; color: #6b7280; }
+.status-error { color: #dc2626; }
+.status-success { color: #16a34a; }
+.status-scanned { color: #2563eb; }
+.status-expired { color: #dc2626; }
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-info img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e5e7eb; }
+button { padding: 8px 12px; border: none; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; }
+button:hover { background: #1d4ed8; }
+.button.secondary, .actions .secondary { background: #6b7280; }
+.button.secondary:hover, .actions .secondary:hover { background: #4b5563; }
+
+.account-box { width: 100%; display: grid; grid-template-columns: 1fr; gap: 8px; }
+.account-box input { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; }
+.divider { color: #9aa0a6; font-size: 13px; }
+.actions { display: flex; gap: 8px; }
