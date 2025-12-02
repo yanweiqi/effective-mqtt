@@ -75,13 +75,6 @@ const Login = () => {
     <div className="login-page">
       <div className="login-card">
         <h1>登录</h1>
-
-        <div className="tabs">
-          <button className={mode === 'account' ? 'tab active' : 'tab'} onClick={() => setMode('account')}>账号登录</button>
-          <button className={mode === 'sms' ? 'tab active' : 'tab'} onClick={() => setMode('sms')}>短信登录</button>
-          <button className={mode === 'wechat' ? 'tab active' : 'tab'} onClick={() => setMode('wechat')}>微信扫码</button>
-        </div>
-
         {mode === 'account' && (
           <div className="account-box">
             <input placeholder="账号" value={account.username} onChange={(e) => setAccount({ ...account, username: e.target.value })} />
@@ -90,6 +83,15 @@ const Login = () => {
             {error && <div className="status status-error">{error}</div>}
           </div>
         )}
+
+        {/* 其它登录方式 */}
+        <div className="other-login">
+          <span className="other-label">其它登录方式</span>
+          <div className="icon-group">
+            <button className="icon-button wechat" onClick={() => setMode('wechat')}>微信</button>
+            <button className="icon-button sms" onClick={() => setMode('sms')}>短信</button>
+          </div>
+        </div>
 
         {mode === 'sms' && (
           <div className="sms-box">

@@ -4,9 +4,13 @@
 .login-card h1 { font-size: 22px; margin: 0 0 4px; }
 .login-card h2 { font-size: 18px; margin: 8px 0 0; }
 .wechat-box { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; margin-top: 8px; }
-.tabs { display: flex; gap: 8px; width: 100%; }
-.tab { flex: 1; padding: 8px; border: 1px solid #e5e7eb; background: #f8fafc; border-radius: 6px; cursor: pointer; text-align: center; }
-.tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.other-login { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; margin-top: 8px; }
+.other-label { color: #6b7280; font-size: 13px; }
+.icon-group { display: flex; gap: 8px; }
+.icon-button { padding: 6px 10px; border: 1px solid #e5e7eb; background: #f8fafc; color: #0f766e; border-radius: 20px; cursor: pointer; }
+.icon-button:hover { background: #eef2ff; }
+.icon-button.wechat { color: #16a34a; }
+.icon-button.sms { color: #2563eb; }
 .qr { width: 180px; height: 180px; border-radius: 6px; border: 1px solid #e5e7eb; }
 .status { font-size: 14px; color: #6b7280; }
 .status-error { color: #dc2626; }
