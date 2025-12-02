@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Login.css';
 import { createLoginSession, pollLoginStatus, resetLogin } from '../services/wechatAuth';
 import { loginWithPassword, getSession, logout } from '../services/auth';
+import { sendCode, verifyCode } from '../services/smsAuth';
 
 const Login = () => {
   const [qr, setQr] = useState(null);
@@ -9,66 +10,65 @@ const Login = () => {
   const [user, setUser] = useState(null);
   const [account, setAccount] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('account'); // 'account' | 'wechat'
+  const [mode, setMode] = useState('account'); // 'account' | 'sms' | 'wechat'
+  const [sms, setSms] = useState({ phone: '', code: '' });
+  const [cooldown, setCooldown] = useState(0);
 
+  // Init QR and restore session
   useEffect(() => {
-    // Prepare WeChat session (inactive until user switches to wechat mode)
     const { id, qrUrl } = createLoginSession();
     setQr({ id, url: qrUrl });
     setStatus('PENDING');
 
-    let timer = null;
-    const startWechatPolling = () => {
-      if (timer) return;
-      timer = setInterval(async () => {
-        const res = pollLoginStatus(id);
-        setStatus(res.status);
-        if (res.user) setUser(res.user);
-        if (res.status === 'SUCCESS' || res.status === 'EXPIRED') {
-          clearInterval(timer);
-          timer = null;
-        }
-      }, 1500);
-    };
-
-    // Start polling only when user selects WeChat mode
-    if (mode === 'wechat') startWechatPolling();
-
-    // Load existing account session if any
     const session = getSession();
-    if (session?.user) {
-      setUser({ nickname: session.user.username, avatar: 'https://via.placeholder.com/64' });
+    if (session) {
+      setUser({ nickname: session.username, avatar: 'https://via.placeholder.com/64' });
       setStatus('SUCCESS');
     }
+  }, []);
 
+  // WeChat polling only in wechat mode
+  useEffect(() => {
+    if (!qr || mode !== 'wechat') return;
+    let timer = setInterval(() => {
+      const res = pollLoginStatus(qr.id);
+      setStatus(res.status);
+      if (res.user) setUser(res.user);
+      if (res.status === 'SUCCESS' || res.status === 'EXPIRED') {
+        clearInterval(timer);
+        timer = null;
+      }
+    }, 1500);
     return () => { if (timer) clearInterval(timer); };
-  }, [mode]);
+  }, [mode, qr]);
+
+  // SMS cooldown ticker
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setInterval(() => setCooldown((c) => (c > 0 ? c - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, [cooldown]);
+
+  const handleAccountLogin = async () => {
+    try {
+      setError('');
+      const res = await loginWithPassword(account.username.trim(), account.password.trim());
+      setUser({ nickname: res.user.username, avatar: 'https://via.placeholder.com/64' });
+      setStatus('SUCCESS');
+    } catch (e) { setError(e.message); }
+  };
 
   const restart = () => {
     resetLogin();
-    setQr(null);
-    setUser(null);
-    setStatus('INIT');
     const { id, qrUrl } = createLoginSession();
     setQr({ id, url: qrUrl });
     setStatus('PENDING');
-  };
-
-  const handleAccountLogin = () => {
-    try {
-      setError('');
-      const res = loginWithPassword(account.username.trim(), account.password);
-      setUser({ nickname: res.user.username, avatar: 'https://via.placeholder.com/64' });
-      setStatus('SUCCESS');
-    } catch (e) {
-      setError(e.message);
-    }
   };
 
   const handleLogout = () => {
     logout();
     setUser(null);
-    setStatus('PENDING');
+    setStatus('INIT');
   };
 
   return (
@@ -78,6 +78,7 @@ const Login = () => {
 
         <div className="tabs">
           <button className={mode === 'account' ? 'tab active' : 'tab'} onClick={() => setMode('account')}>账号登录</button>
+          <button className={mode === 'sms' ? 'tab active' : 'tab'} onClick={() => setMode('sms')}>短信登录</button>
           <button className={mode === 'wechat' ? 'tab active' : 'tab'} onClick={() => setMode('wechat')}>微信扫码</button>
         </div>
 
@@ -87,6 +88,32 @@ const Login = () => {
             <input type="password" placeholder="密码" value={account.password} onChange={(e) => setAccount({ ...account, password: e.target.value })} />
             <button onClick={handleAccountLogin}>登录</button>
             {error && <div className="status status-error">{error}</div>}
+          </div>
+        )}
+
+        {mode === 'sms' && (
+          <div className="sms-box">
+            <div className="sms-row">
+              <input placeholder="手机号" value={sms.phone} onChange={(e) => setSms({ ...sms, phone: e.target.value })} />
+              <button disabled={cooldown > 0} onClick={() => {
+                try {
+                  setError('');
+                  sendCode(sms.phone.trim());
+                  setCooldown(60);
+                } catch (e) { setError(e.message); }
+              }}>{cooldown > 0 ? `重发(${cooldown}s)` : '发送验证码'}</button>
+            </div>
+            <div className="sms-row">
+              <input placeholder="验证码" value={sms.code} onChange={(e) => setSms({ ...sms, code: e.target.value })} />
+              <button onClick={() => {
+                try {
+                  setError('');
+                  const res = verifyCode(sms.phone.trim(), sms.code.trim());
+                  setUser({ nickname: res.user.username, avatar: 'https://via.placeholder.com/64' });
+                  setStatus('SUCCESS');
+                } catch (e) { setError(e.message); }
+              }}>短信登录</button>
+            </div>
           </div>
         )}
 
