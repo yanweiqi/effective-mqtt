@@ -3,7 +3,7 @@ import './ApplicationManagement.css';
 import { submitApplication, listApplications } from '../services/appRegistry';
 
 const ApplicationManagement = () => {
-  const [form, setForm] = useState({ name: '', code: '', description: '', link: '' });
+  const [form, setForm] = useState({ name: '', code: '', description: '', link: '', expiry: '' });
   const [apps, setApps] = useState([]);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ const ApplicationManagement = () => {
       const app = submitApplication(form);
       setResult(app);
       setApps(listApplications());
-      setForm({ name: '', code: '', description: '', link: '' });
+      setForm({ name: '', code: '', description: '', link: '', expiry: '' });
     } catch (e) {
       setError(e.message);
     }
@@ -34,6 +34,7 @@ const ApplicationManagement = () => {
           <input placeholder="应用 code" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
         </div>
         <input placeholder="链接地址 (如应用官网或接入文档)" value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
+        <input type="date" placeholder="到期日期" value={form.expiry} onChange={(e) => setForm({ ...form, expiry: e.target.value })} />
         <textarea placeholder="应用描述" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
         <button onClick={handleSubmit}>提交申请</button>
         {error && <div className="error">{error}</div>}
@@ -45,6 +46,7 @@ const ApplicationManagement = () => {
           <div className="kv"><span>应用名称:</span><span>{result.name}</span></div>
           <div className="kv"><span>应用 code:</span><span>{result.code}</span></div>
           {result.link && <div className="kv"><span>链接:</span><a href={result.link} target="_blank" rel="noreferrer">{result.link}</a></div>}
+          {result.expiry && <div className="kv"><span>到期时间:</span><span>{new Date(result.expiry).toLocaleDateString()}</span></div>}
           <div className="kv"><span>AK:</span><code>{result.ak}</code></div>
           <div className="kv"><span>SK:</span><code>{result.sk}</code></div>
           <small>请妥善保管 AK/SK，用于连接 MQTT 服务端身份认证。</small>
@@ -61,6 +63,7 @@ const ApplicationManagement = () => {
               <th>链接</th>
               <th>AK</th>
               <th>SK</th>
+              <th>到期时间</th>
               <th>创建时间</th>
             </tr>
           </thead>
@@ -70,13 +73,14 @@ const ApplicationManagement = () => {
                 <td>{a.name}</td>
                 <td>{a.code}</td>
                 <td>{a.link ? (<a href={a.link} target="_blank" rel="noreferrer">{a.link}</a>) : '-'}</td>
+                <td>{a.expiry ? new Date(a.expiry).toLocaleDateString() : '-'}</td>
                 <td><code>{a.ak}</code></td>
                 <td><code>{a.sk}</code></td>
                 <td>{new Date(a.createdAt).toLocaleString()}</td>
               </tr>
             ))}
             {apps.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center' }}>暂无应用</td></tr>
+              <tr><td colSpan={7} style={{ textAlign: 'center' }}>暂无应用</td></tr>
             )}
           </tbody>
         </table>
